@@ -214,6 +214,7 @@
 </head>
 <body>
     <div class="game-container" id="app">
+        <!-- Tela de Login -->
         <div id="loginScreen" class="login-screen">
             <div class="header">
                 <h2>🏆 Desafio da Tabuada</h2>
@@ -227,6 +228,10 @@
                         <option value="6º Ano B">6º Ano B</option>
                         <option value="7º Ano A">7º Ano A</option>
                         <option value="7º Ano B">7º Ano B</option>
+                        <option value="8º Ano A">8º Ano A</option>
+                        <option value="8º Ano B">8º Ano B</option>
+                        <option value="9º Ano A">9º Ano A</option>
+                        <option value="9º Ano B">9º Ano B</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -238,6 +243,7 @@
             </div>
         </div>
 
+        <!-- Tela do Jogo -->
         <div id="gameScreen" class="hidden">
             <div class="header">
                 <div style="display: flex; justify-content: space-between;">
@@ -259,10 +265,11 @@
             </div>
             <div class="ranking">
                 <h3>🏅 Ranking Global</h3>
-                <div id="rankingList">Carregando...</div>
+                <div id="rankingList">Carregando ranking...</div>
             </div>
         </div>
 
+        <!-- Tela Game Over -->
         <div id="gameOverScreen" class="hidden">
             <div class="game-over">
                 <h2>💀 GAME OVER 💀</h2>
@@ -274,7 +281,7 @@
     </div>
 
     <script>
-        // ✅ URL CORRIGIDA (adicionei a aspa que faltava)
+        // ✅ LINK DO SEU APPS SCRIPT JÁ INSERIDO
         const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXyipYCtdn6yPxdDL0aEL7aRzCorUqiiXqcig_n0VutihbSNgXzujMcTukUDJvdRK/exec';
         
         let currentPlayer = { codigo: '', turma: '' };
@@ -444,9 +451,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'save', codigo, turma, nivel, eficiencia, timestamp: new Date().toISOString() })
                 });
-                console.log('Pontuação enviada!');
+                console.log('Pontuação enviada com sucesso!');
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao enviar pontuação:', error);
             }
         }
         
@@ -455,7 +462,7 @@
                 const response = await fetch(`${APP_SCRIPT_URL}?action=get`);
                 const data = await response.json();
                 if (!data || data.length === 0) {
-                    document.getElementById('rankingList').innerHTML = '<p>🏅 Nenhum recorde ainda!</p>';
+                    document.getElementById('rankingList').innerHTML = '<p>🏅 Nenhum recorde ainda! Seja o primeiro!</p>';
                     return;
                 }
                 data.sort((a, b) => {
@@ -470,7 +477,7 @@
                 document.getElementById('rankingList').innerHTML = html;
             } catch (error) {
                 console.error('Erro ao carregar ranking:', error);
-                document.getElementById('rankingList').innerHTML = '<p>⚠️ Erro ao carregar ranking</p>';
+                document.getElementById('rankingList').innerHTML = '<p>⚠️ Erro ao carregar ranking. Verifique sua conexão.</p>';
             }
         }
         
@@ -486,6 +493,13 @@
             document.getElementById('codigoAcesso').value = '';
             if (timerInterval) clearInterval(timerInterval);
         };
+        
+        // Atualizar ranking a cada 10 segundos durante o jogo
+        setInterval(() => {
+            if (gameActive) {
+                loadRanking();
+            }
+        }, 10000);
         
         loadRanking();
     </script>
