@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>🏆 Desafio da Tabuada - Modo Competitivo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Container principal */
+        .game-container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #5f27cd 0%, #341f97 100%);
+            padding: 20px;
+            color: white;
+        }
+
+        .lives {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+            font-size: 32px;
+        }
+
+        .heart {
+            transition: transform 0.3s ease;
+        }
+
+        .heart.lost {
+            opacity: 0.2;
+            filter: grayscale(1);
+        }
+
+        .level-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Área da pergunta */
+        .question-area {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 20px 0;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        #answer {
+            padding: 15px 20px;
+            font-size: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            width: 150px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        #answer:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Barra de tempo */
+        .timer-bar-container {
+            background: #e0e0e0;
+            height: 12px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px;
+        }
+
+        .timer-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #00b09b, #96c93d);
+            transition: width 0.1s linear;
+            border-radius: 12px;
+        }
+
+        .timer-bar.warning {
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+        }
+
+        .timer-text {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        /* Ranking */
+        .ranking {
+            background: #f8f9fa;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .ranking h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ranking-table th,
+        .ranking-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .ranking-table th {
+            background: #667eea;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        .ranking-table tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .first-place {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            font-weight: 800;
+        }
+
+        /* Tela de login */
+        .login-screen {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+
+        .error-message {
+            color: #f5576c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Game over */
+        .game-over {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+
+        /* Animações */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        @keyframes correct {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); background: #96c93d; }
+        }
+
+        .correct-animation {
+            animation: correct 0.3s ease;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .question {
+                font-size: 36px;
+            }
+            
+            button {
+                padding: 12px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container" id="app">
+        <!-- Tela de Login -->
+        <div id="loginScreen" class="login-screen">
+            <div class="header">
+                <h2>🏆 Desafio da Tabuada</h2>
+                <p>Modo Competitivo</p>
+            </div>
+            <div style="padding: 20px;">
+                <div class="form-group">
+                    <label>📚 Selecione a Turma</label>
+                    <select id="turma">
+                        <option value="6º Ano A">6º Ano A</option>
+                        <option value="6º Ano B">6º Ano B</option>
+                        <option value="7º Ano A">7º Ano A</option>
+                        <option value="7º Ano B">7º Ano B</option>
+                        <option value="8º Ano A">8º Ano A</option>
+                        <option value="8º Ano B">8º Ano B</option>
+                        <option value="9º Ano A">9º Ano A</option>
+                        <option value="9º Ano B">9º Ano B</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>🔑 Código de Acesso (ex: CA6A2601)</label>
+                    <input type="text" id="codigoAcesso" placeholder="CA6A2601" maxlength="10">
+                    <div class="error-message" id="loginError"></div>
+                </div>
+                <button onclick="login()">🎮 Iniciar Jogo</button>
+            </div>
+        </div>
+
+        <!-- Tela do Jogo -->
+        <div id="gameScreen" class="hidden">
+            <div class="header">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="level-badge" id="levelDisplay">Nível 1</span>
+                    <span class="level-badge" id="codigoDisplay"></span>
+                </div>
+                <div class="lives" id="livesDisplay">
+                    ❤️ ❤️ ❤️
+                </div>
+            </div>
+            <div class="timer-bar-container">
+                <div class="timer-text" id="timerText">Tempo: 60s</div>
+                <div class="timer-bar" id="timerBar"></div>
+            </div>
+            <div class="question-area">
+                <div class="question" id="question">5 x 3 = ?</div>
+                <div class="input-area">
+                    <input type="number" id="answer" placeholder="?" autocomplete="off">
+                    <button onclick="checkAnswer()">✅ Responder</button>
+                </div>
+            </div>
+            <div class="ranking">
+                <h3>🏅 Ranking Global</h3>
+                <div id="rankingList">Carregando ranking...</div>
+            </div>
+        </div>
+
+        <!-- Tela Game Over -->
+        <div id="gameOverScreen" class="hidden">
+            <div class="game-over">
+                <h2>💀 GAME OVER 💀</h2>
+                <div class="stats" id="gameStats"></div>
+                <button onclick="resetGame()">🔄 Jogar Novamente</button>
+                <button onclick="logout()">🏠 Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correctSound">
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="wrongSound">
+        <source src="https://www.soundjay.com/misc/sounds/buzzer-or-wrong-answer-02.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Configuração - SUBSTITUA PELA URL DO SEU APPS SCRIPT
+        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/SEU_ID_AQUI/exec'; //https://script.google.com/macros/s/AKfycbwf5xQXuFfcGBjFWxWuL3fsBgdRlwM1XzQi_YUVJEnnydej1IuWavXg8ROWFc8vg8k3/exec
+
+        // Variáveis globais do jogo
+        let currentPlayer = {
+            codigo: '',
+            turma: ''
+        };
+        let gameActive = false;
+        let currentLevel = 1;
+        let lives = 3;
+        let score = 0;
+        let totalQuestions = 0;
+        let timeLeft = 60;
+        let timerInterval = null;
+        let currentQuestion = null;
+        let currentAnswer = 0;
+        let timePenalty = 0;
+        
+        // Níveis de tempo
+        const levelTimes = {
+            1: 60,
+            2: 30,
+            3: 20,
+            4: 15,
+            5: 10
+        };
+
+        // Função de login
+        window.login = async function() {
+            const turma = document.getElementById('turma').value;
+            const codigo = document.getElementById('codigoAcesso').value.trim().toUpperCase();
+            const errorDiv = document.getElementById('loginError');
+            
+            // Validação rigorosa do código: CA + Série/Turma + 26 + Número da Chamada
+            const regex = /^CA[A-Z0-9]{1,3}26\d{2}$/;
+            
+            if (!regex.test(codigo)) {
+                errorDiv.textContent = '❌ Código inválido! Formato: CA + Turma + 26 + Número (ex: CA6A2601)';
+                return;
+            }
+            
+            // Extrair informações do código
+            const match = codigo.match(/^CA(.+?)26(\d{2})$/);
+            if (!match) {
+                errorDiv.textContent = '❌ Código mal formatado';
+                return;
+            }
+            
+            currentPlayer = {
+                codigo: codigo,
+                turma: turma,
+                serie: match[1],
+                numero: match[2]
+            };
+            
+            errorDiv.textContent = '';
+            
+            // Iniciar jogo
+            startGame();
+        };
+        
+        // Iniciar jogo
+        function startGame() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('codigoDisplay').textContent = currentPlayer.codigo;
+            
+            gameActive = true;
+            currentLevel = 1;
+            lives = 3;
+            score = 0;
+            totalQuestions = 0;
+            timePenalty = 0;
+            
+            updateLivesDisplay();
+            updateLevelDisplay();
+            loadRanking();
+            nextQuestion();
+        }
+        
+        // Próxima questão
+        function nextQuestion() {
+            if (!gameActive) return;
+            
+            // Parar timer anterior
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Sortear tabuada (0 a 10)
+            const num1 = Math.floor(Math.random() * 11);
+            const num2 = Math.floor(Math.random() * 11);
+            currentAnswer = num1 * num2;
+            currentQuestion = `${num1} x ${num2}`;
+            document.getElementById('question').textContent = `${currentQuestion} = ?`;
+            document.getElementById('answer').value = '';
+            document.getElementById('answer').focus();
+            
+            // Configurar tempo do nível atual
+            timeLeft = levelTimes[currentLevel];
+            document.getElementById('timerText').textContent = `Tempo: ${timeLeft}s`;
+            updateTimerBar();
+            
+            // Iniciar timer
+            timerInterval = setInterval(() => {
+                if (!gameActive) return;
+                
+                timeLeft--;
+                document.getElementById('timerText').textContent = `Tempo: ${timeLeft}s`;
+                updateTimerBar();
+                
+                // Tempo esgotado
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    loseLife('Tempo esgotado!');
+                }
+            }, 1000);
+        }
+        
+        // Verificar resposta
+        window.checkAnswer = function() {
+            if (!gameActive) return;
+            
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            const isCorrect = (userAnswer === currentAnswer);
+            totalQuestions++;
+            
+            if (isCorrect) {
+                // Acerto
+                playSound('correct');
+                showFeedback('✅ Correto!', '#96c93d');
+                document.getElementById('answer').classList.add('correct-animation');
+                setTimeout(() => {
+                    document.getElementById('answer').classList.remove('correct-animation');
+                }, 300);
+                
+                // Calcular pontuação com bônus de tempo
+                let pointsEarned = 10 + Math.floor(timeLeft / 2);
+                score += pointsEarned;
+                
+                // Próxima questão
+                clearInterval(timerInterval);
+                nextQuestion();
+            } else {
+                // Erro
+                playSound('wrong');
+                showFeedback('❌ Errado!', '#f5576c');
+                document.getElementById('answer').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('answer').classList.remove('shake');
+                }, 300);
+                loseLife('Resposta errada!');
+            }
+        };
+        
+        // Perder vida
+        function loseLife(reason) {
+            lives--;
+            timePenalty++;
+            updateLivesDisplay();
+            
+            // Feedback visual
+            showFeedback(`💔 ${reason} -${1} vida`, '#f5576c');
+            
+            if (lives <= 0) {
+                gameOver();
+            } else {
+                // Continuar com nova questão
+                clearInterval(timerInterval);
+                nextQuestion();
+            }
+        }
+        
+        // Atualizar display de vidas
+        function updateLivesDisplay() {
+            const livesContainer = document.getElementById('livesDisplay');
+            let hearts = '';
+            for (let i = 0; i < 3; i++) {
+                if (i < lives) {
+                    hearts += '❤️ ';
+                } else {
+                    hearts += '🖤 ';
+                }
+            }
+            livesContainer.textContent = hearts;
+        }
+        
+        // Atualizar nível
+        function updateLevelDisplay() {
+            document.getElementById('levelDisplay').textContent = `Nível ${currentLevel} - ${levelTimes[currentLevel]}s`;
+            
+            // Avançar nível a cada 5 acertos
+            if (totalQuestions > 0 && totalQuestions % 5 === 0 && currentLevel < 5) {
+                currentLevel++;
+                updateLevelDisplay();
+            }
+        }
+        
+        // Atualizar barra de tempo
+        function updateTimerBar() {
+            const maxTime = levelTimes[currentLevel];
+            const percentage = (timeLeft / maxTime) * 100;
+            const timerBar = document.getElementById('timerBar');
+            timerBar.style.width = `${Math.max(0, percentage)}%`;
+            
+            if (percentage < 30) {
+                timerBar.classList.add('warning');
+            } else {
+                timerBar.classList.remove('warning');
+            }
+        }
+        
+        // Game Over
+        async function gameOver() {
+            gameActive = false;
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // Calcular eficiência
+            const accuracy = totalQuestions > 0 ? (score / (totalQuestions * 10)) * 100 : 0;
+            const speedBonus = Math.max(0, 100 - (timePenalty * 5));
+            const efficiency = Math.min(100, Math.floor((accuracy * 0.6) + (speedBonus * 0.4)));
+            
+            // Enviar para o ranking
+            await sendScoreToRanking(currentPlayer.codigo, currentPlayer.turma, currentLevel, efficiency);
+            
+            // Mostrar estatísticas
+            const stats = `
+                <p>📊 <strong>Acertos:</strong> ${score/10}/${totalQuestions}</p>
+                <p>🏆 <strong>Nível Alcançado:</strong> ${currentLevel}</p>
+                <p>⚡ <strong>Eficiência:</strong> ${efficiency}%</p>
+                <p>💀 <strong>Vidas Restantes:</strong> ${lives}/3</p>
+            `;
+            document.getElementById('gameStats').innerHTML = stats;
+            
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('gameOverScreen').classList.remove('hidden');
+            
+            // Atualizar ranking
+            await loadRanking();
+        }
+        
+        // Enviar pontuação para o Apps Script
+        async function sendScoreToRanking(codigo, turma, nivel, eficiencia) {
+            try {
+                const response = await fetch(APP_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'save',
+                        codigo: codigo,
+                        turma: turma,
+                        nivel: nivel,
+                        eficiencia: eficiencia,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                console.log('Pontuação enviada com sucesso!');
+            } catch (error) {
+                console.error('Erro ao enviar pontuação:', error);
+            }
+        }
+        
+        // Carregar ranking
+        async function loadRanking() {
+            try {
+                const response = await fetch(`${APP_SCRIPT_URL}?action=get`);
+                const data = await response.json();
+                displayRanking(data);
+            } catch (error) {
+                console.error('Erro ao carregar ranking:', error);
+                document.getElementById('rankingList').innerHTML = '<p>⚠️ Erro ao carregar ranking</p>';
+            }
+        }
+        
+        // Exibir ranking
+        function displayRanking(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('rankingList').innerHTML = '<p>🏅 Nenhum recorde ainda!</p>';
+                return;
+            }
+            
+            // Ordenar por nível (decrescente) e eficiência
+            data.sort((a, b) => {
+                if (b.nivel !== a.nivel) return b.nivel - a.nivel;
+                return b.eficiencia - a.eficiencia;
+            });
+            
+            let html = '<table class="ranking-table"><thead><tr><th>Pos</th><th>Código</th><th>Nível</th><th>Eficiência</th></tr></thead><tbody>';
+            
+            data.slice(0, 10).forEach((item, index) => {
+                const rowClass = index === 0 ? 'first-place' : '';
+                html += `<tr class="${rowClass}">
+                    <td>${index + 1}${index === 0 ? '🏆' : ''}</td>
+                    <td>${item.codigo}</td>
+                    <td>${item.nivel}/5</td>
+                    <td>${item.eficiencia}%</td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            document.getElementById('rankingList').innerHTML = html;
+        }
+        
+        // Resetar jogo
+        window.resetGame = function() {
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('codigoAcesso').value = '';
+        };
+        
+        // Sair
+        window.logout = function() {
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('codigoAcesso').value = '';
+            if (timerInterval) clearInterval(timerInterval);
+        };
+        
+        // Feedback visual
+        function showFeedback(message, color) {
+            const feedback = document.createElement('div');
+            feedback.textContent = message;
+            feedback.style.position = 'fixed';
+            feedback.style.top = '50%';
+            feedback.style.left = '50%';
+            feedback.style.transform = 'translate(-50%, -50%)';
+            feedback.style.backgroundColor = color;
+            feedback.style.color = 'white';
+            feedback.style.padding = '15px 25px';
+            feedback.style.borderRadius = '50px';
+            feedback.style.fontWeight = 'bold';
+            feedback.style.zIndex = '1000';
+            feedback.style.fontSize = '18px';
+            feedback.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 1500);
+        }
+        
+        // Sons
+        function playSound(type) {
+            const sound = document.getElementById(`${type}Sound`);
+            if (sound) {
+                sound.volume = 0.5;
+                sound.play().catch(e => console.log('Áudio não disponível'));
+            }
+        }
+        
+        // Carregar ranking ao iniciar
+        setInterval(() => {
+            if (document.getElementById('gameScreen') && !document.getElementById('gameScreen').classList.contains('hidden')) {
+                loadRanking();
+            }
+        }, 10000); // Atualizar ranking a cada 10 segundos
+        
+        // Inicializar
+        loadRanking();
+    </script>
+</body>
+</html>
