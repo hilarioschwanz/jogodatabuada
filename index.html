@@ -9,11 +9,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -214,7 +213,6 @@
 </head>
 <body>
     <div class="game-container" id="app">
-        <!-- Tela de Login -->
         <div id="loginScreen" class="login-screen">
             <div class="header">
                 <h2>🏆 Desafio da Tabuada</h2>
@@ -243,7 +241,6 @@
             </div>
         </div>
 
-        <!-- Tela do Jogo -->
         <div id="gameScreen" class="hidden">
             <div class="header">
                 <div style="display: flex; justify-content: space-between;">
@@ -269,7 +266,6 @@
             </div>
         </div>
 
-        <!-- Tela Game Over -->
         <div id="gameOverScreen" class="hidden">
             <div class="game-over">
                 <h2>💀 GAME OVER 💀</h2>
@@ -281,8 +277,8 @@
     </div>
 
     <script>
-        // ✅ LINK DO SEU APPS SCRIPT JÁ INSERIDO
-        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQXyipYCtdn6yPxdDL0aEL7aRzCorUqiiXqcig_n0VutihbSNgXzujMcTukUDJvdRK/exec';
+        // ✅ URL DO SEU APPS SCRIPT (TESTADA E FUNCIONANDO)
+        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxU7E-0CJdIEfeVHsT-Uzvd1fGKncXbOq6zFmpI4kS9Wu9Pd_fknlglS49Ieb7WVsW/exec';
         
         let currentPlayer = { codigo: '', turma: '' };
         let gameActive = false;
@@ -354,7 +350,7 @@
                 updateTimerBar();
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    loseLife('Tempo esgotou!');
+                    loseLife('⏰ Tempo esgotou!');
                 }
             }, 1000);
         }
@@ -367,18 +363,34 @@
             totalQuestions++;
             
             if (isCorrect) {
-                document.getElementById('answer').style.animation = 'shake 0.3s';
-                setTimeout(() => document.getElementById('answer').style.animation = '', 300);
+                showFeedback('✅ Correto!', '#4CAF50');
                 let pointsEarned = 10 + Math.floor(timeLeft / 2);
                 score += pointsEarned;
                 clearInterval(timerInterval);
                 nextQuestion();
             } else {
-                document.getElementById('answer').classList.add('shake');
-                setTimeout(() => document.getElementById('answer').classList.remove('shake'), 300);
+                showFeedback(`❌ Errado! Resposta: ${currentAnswer}`, '#f44336');
                 loseLife('Resposta errada!');
             }
         };
+        
+        function showFeedback(message, color) {
+            const feedback = document.createElement('div');
+            feedback.textContent = message;
+            feedback.style.position = 'fixed';
+            feedback.style.top = '20%';
+            feedback.style.left = '50%';
+            feedback.style.transform = 'translateX(-50%)';
+            feedback.style.backgroundColor = color;
+            feedback.style.color = 'white';
+            feedback.style.padding = '12px 24px';
+            feedback.style.borderRadius = '50px';
+            feedback.style.fontWeight = 'bold';
+            feedback.style.zIndex = '1000';
+            feedback.style.fontSize = '18px';
+            document.body.appendChild(feedback);
+            setTimeout(() => feedback.remove(), 1500);
+        }
         
         function loseLife(reason) {
             lives--;
@@ -406,6 +418,7 @@
             if (totalQuestions > 0 && totalQuestions % 5 === 0 && currentLevel < 5) {
                 currentLevel++;
                 updateLevelDisplay();
+                showFeedback(`⭐ AVANÇOU PARA NÍVEL ${currentLevel}! ⭐`, '#FF9800');
             }
         }
         
@@ -445,39 +458,79 @@
         
         async function sendScoreToRanking(codigo, turma, nivel, eficiencia) {
             try {
-                await fetch(APP_SCRIPT_URL, {
+                const response = await fetch(APP_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'save', codigo, turma, nivel, eficiencia, timestamp: new Date().toISOString() })
+                    body: JSON.stringify({ 
+                        action: 'save', 
+                        codigo, 
+                        turma, 
+                        nivel, 
+                        eficiencia, 
+                        timestamp: new Date().toISOString() 
+                    })
                 });
-                console.log('Pontuação enviada com sucesso!');
+                const result = await response.json();
+                console.log('✅ Pontuação salva:', result);
             } catch (error) {
-                console.error('Erro ao enviar pontuação:', error);
+                console.error('Erro ao salvar:', error);
             }
         }
         
         async function loadRanking() {
             try {
-                const response = await fetch(`${APP_SCRIPT_URL}?action=get`);
-                const data = await response.json();
+                const url = `${APP_SCRIPT_URL}?action=get`;
+                console.log('Buscando ranking de:', url);
+                
+                const response = await fetch(url);
+                const text = await response.text();
+                console.log('Resposta do servidor:', text);
+                
+                // Tenta parsear como JSON
+                let data = [];
+                try {
+                    data = JSON.parse(text);
+                } catch(e) {
+                    console.error('Erro ao parsear JSON:', e);
+                    document.getElementById('rankingList').innerHTML = '<p>⚠️ Erro ao processar dados do ranking.</p>';
+                    return;
+                }
+                
                 if (!data || data.length === 0) {
                     document.getElementById('rankingList').innerHTML = '<p>🏅 Nenhum recorde ainda! Seja o primeiro!</p>';
                     return;
                 }
-                data.sort((a, b) => {
+                
+                // Filtrar pela turma atual
+                let turmaData = data.filter(item => item.turma === currentPlayer.turma);
+                
+                if (turmaData.length === 0) {
+                    document.getElementById('rankingList').innerHTML = '<p>🏅 Nenhum recorde na sua turma ainda!</p>';
+                    return;
+                }
+                
+                turmaData.sort((a, b) => {
                     if (b.nivel !== a.nivel) return b.nivel - a.nivel;
                     return b.eficiencia - a.eficiencia;
                 });
+                
                 let html = '<table class="ranking-table"><thead><tr><th>Pos</th><th>Código</th><th>Nível</th><th>Eficiência</th></tr></thead><tbody>';
-                data.slice(0, 10).forEach((item, index) => {
-                    html += `<tr class="${index === 0 ? 'first-place' : ''}"><td>${index + 1}${index === 0 ? '🏆' : ''}</td><td>${item.codigo}</td><td>${item.nivel}/5</td><td>${item.eficiencia}%</td></tr>`;
+                
+                turmaData.slice(0, 10).forEach((item, index) => {
+                    const isCurrent = item.codigo === currentPlayer.codigo;
+                    html += `<tr style="${isCurrent ? 'background: #E3F2FD; font-weight: bold;' : ''}">
+                        <td>${index + 1}${index === 0 ? ' 👑' : ''}</td>
+                        <td>${item.codigo}${isCurrent ? ' (você)' : ''}</td>
+                        <td>${item.nivel}/5</td>
+                        <td>${item.eficiencia}%</td>
+                    </tr>`;
                 });
+                
                 html += '</tbody></table>';
                 document.getElementById('rankingList').innerHTML = html;
             } catch (error) {
-                console.error('Erro ao carregar ranking:', error);
-                document.getElementById('rankingList').innerHTML = '<p>⚠️ Erro ao carregar ranking. Verifique sua conexão.</p>';
+                console.error('Erro detalhado ao carregar ranking:', error);
+                document.getElementById('rankingList').innerHTML = '<p>⚠️ Erro ao carregar ranking. Tente novamente.</p>';
             }
         }
         
@@ -494,12 +547,12 @@
             if (timerInterval) clearInterval(timerInterval);
         };
         
-        // Atualizar ranking a cada 10 segundos durante o jogo
+        // Atualizar ranking a cada 15 segundos
         setInterval(() => {
-            if (gameActive) {
+            if (gameActive && currentPlayer.turma) {
                 loadRanking();
             }
-        }, 10000);
+        }, 15000);
         
         loadRanking();
     </script>
