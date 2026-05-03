@@ -3,670 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>🏆 Desafio da Tabuada - Ranking Duplo</title>
+    <title>🏆 Desafio da Tabuada - Ranking Global</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .game-container {
-            max-width: 950px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #5f27cd 0%, #341f97 100%);
-            padding: 20px;
-            color: white;
-            text-align: center;
-        }
-
-        .lives {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 10px 0;
-            font-size: 32px;
-        }
-
-        .level-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 40px;
-            display: inline-block;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .question-area {
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        .question {
-            font-size: 48px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin: 20px 0;
-        }
-
-        .input-area {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        #answer {
-            padding: 15px 20px;
-            font-size: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 50px;
-            width: 180px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        #answer:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        .timer-bar-container {
-            background: #e0e0e0;
-            height: 12px;
-            border-radius: 12px;
-            overflow: hidden;
-            margin: 20px;
-        }
-
-        .timer-bar {
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(90deg, #00b09b, #96c93d);
-            transition: width 0.1s linear;
-        }
-
-        .timer-bar.warning {
-            background: linear-gradient(90deg, #f093fb, #f5576c);
-        }
-
-        .timer-text {
-            text-align: center;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        /* DOIS RANKINGS LADO A LADO */
-        .rankings-container {
-            display: flex;
-            gap: 15px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-top: 2px solid #667eea;
-        }
-
-        .ranking-box {
-            flex: 1;
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .ranking-box h3 {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 12px;
-            text-align: center;
-            font-size: 15px;
-            margin: 0;
-        }
-
-        .ranking-content {
-            max-height: 350px;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .ranking-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-
-        .ranking-table th,
-        .ranking-table td {
-            padding: 8px 4px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .ranking-table th {
-            background: #f0f0f0;
-            color: #333;
-            position: sticky;
-            top: 0;
-        }
-
-        .login-screen, .game-over {
-            padding: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 16px;
-        }
-
-        .error-message {
-            color: #f5576c;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .stats {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 16px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .shake {
-            animation: shake 0.3s ease-in-out;
-        }
-
-        .feedback {
-            position: fixed;
-            top: 25%;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: bold;
-            z-index: 1000;
-            font-size: 18px;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        .badge-turma {
-            background: #FF9800;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 12px;
-            font-size: 10px;
-            white-space: nowrap;
-        }
-
-        @media (max-width: 700px) {
-            .rankings-container {
-                flex-direction: column;
-            }
-            .question { font-size: 36px; }
-            button { padding: 12px 20px; }
-        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Poppins',system-ui;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+        .game-container{max-width:950px;width:100%;background:rgba(255,255,255,0.95);border-radius:32px;box-shadow:0 20px 60px rgba(0,0,0,0.3);overflow:hidden;}
+        .header{background:linear-gradient(135deg,#5f27cd,#341f97);padding:20px;color:white;text-align:center;}
+        .lives{display:flex;justify-content:center;gap:15px;margin:10px 0;font-size:32px;}
+        .level-badge{background:rgba(255,255,255,0.2);padding:8px 16px;border-radius:40px;display:inline-block;font-weight:600;font-size:14px;}
+        .question-area{padding:30px 20px;text-align:center;}
+        .question{font-size:48px;font-weight:800;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;background-clip:text;color:transparent;margin:20px 0;}
+        .input-area{display:flex;gap:10px;justify-content:center;margin:20px 0;}
+        #answer{padding:15px 20px;font-size:20px;border:2px solid #e0e0e0;border-radius:50px;width:180px;text-align:center;}
+        #answer:focus{outline:none;border-color:#667eea;}
+        button{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;padding:15px 30px;border-radius:50px;font-size:16px;font-weight:600;cursor:pointer;transition:transform 0.2s;}
+        button:hover{transform:translateY(-2px);}
+        .timer-bar-container{background:#e0e0e0;height:12px;border-radius:12px;margin:20px;}
+        .timer-bar{height:100%;width:100%;background:linear-gradient(90deg,#00b09b,#96c93d);transition:width 0.1s;}
+        .timer-bar.warning{background:linear-gradient(90deg,#f093fb,#f5576c);}
+        .timer-text{text-align:center;font-weight:600;margin-bottom:5px;}
+        .rankings-container{display:flex;gap:15px;padding:20px;background:#f8f9fa;border-top:2px solid #667eea;}
+        .ranking-box{flex:1;background:white;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+        .ranking-box h3{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px;text-align:center;font-size:14px;}
+        .ranking-content{max-height:350px;overflow-y:auto;padding:10px;}
+        .ranking-table{width:100%;border-collapse:collapse;font-size:12px;}
+        .ranking-table th,.ranking-table td{padding:8px 4px;text-align:left;border-bottom:1px solid #e0e0e0;}
+        .ranking-table th{background:#f0f0f0;color:#333;position:sticky;top:0;}
+        .login-screen,.game-over{padding:30px;}
+        .form-group{margin-bottom:20px;}
+        label{display:block;margin-bottom:8px;font-weight:600;color:#333;}
+        select,input{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:12px;font-size:16px;}
+        .error-message{color:#f5576c;font-size:14px;margin-top:5px;}
+        .stats{background:#f8f9fa;padding:20px;border-radius:16px;margin:20px 0;text-align:center;}
+        .hidden{display:none;}
+        @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-10px);}75%{transform:translateX(10px);}}
+        .shake{animation:shake 0.3s;}
+        .feedback{position:fixed;top:25%;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:50px;font-weight:bold;z-index:1000;font-size:18px;color:white;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+        .badge-turma{background:#FF9800;color:white;padding:2px 6px;border-radius:12px;font-size:10px;white-space:nowrap;}
+        @media (max-width:700px){.rankings-container{flex-direction:column;}.question{font-size:36px;}button{padding:12px 20px;}}
     </style>
 </head>
 <body>
 <div class="game-container">
-    <!-- TELA DE LOGIN -->
     <div id="loginScreen" class="login-screen">
-        <div class="header">
-            <h2>🏆 Desafio da Tabuada</h2>
-            <p>🏅 Ranking da Turma + 🌍 Ranking Global</p>
-        </div>
-        <div style="padding: 20px">
-            <div class="form-group">
-                <label>📚 Selecione sua Turma</label>
+        <div class="header"><h2>🏆 Desafio da Tabuada</h2><p>🌍 Ranking Global Online</p></div>
+        <div style="padding:20px">
+            <div class="form-group"><label>📚 Sua Turma</label>
                 <select id="turma">
-                    <option value="6º Ano A">6º Ano A</option>
-                    <option value="6º Ano B">6º Ano B</option>
-                    <option value="7º Ano A">7º Ano A</option>
-                    <option value="7º Ano B">7º Ano B</option>
-                    <option value="8º Ano A">8º Ano A</option>
-                    <option value="8º Ano B">8º Ano B</option>
-                    <option value="9º Ano A">9º Ano A</option>
-                    <option value="9º Ano B">9º Ano B</option>
+                    <option>6º Ano A</option><option>6º Ano B</option><option>7º Ano A</option>
+                    <option>7º Ano B</option><option>8º Ano A</option><option>8º Ano B</option>
+                    <option>9º Ano A</option><option>9º Ano B</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>🔑 Código (ex: CA6A2601)</label>
+            <div class="form-group"><label>🔑 Código (ex: CA6A2601)</label>
                 <input type="text" id="codigo" placeholder="CA6A2601" maxlength="10">
                 <div class="error-message" id="loginError"></div>
             </div>
-            <button onclick="login()" style="width:100%">🎮 INICIAR JOGO</button>
+            <button onclick="login()" style="width:100%">🎮 INICIAR</button>
         </div>
     </div>
-
-    <!-- TELA DO JOGO -->
     <div id="gameScreen" class="hidden">
         <div class="header">
-            <div style="display: flex; justify-content: space-between">
+            <div style="display:flex;justify-content:space-between">
                 <span class="level-badge" id="levelDisplay">Nível 1</span>
                 <span class="level-badge" id="codigoDisplay"></span>
             </div>
             <div class="lives" id="livesDisplay">❤️ ❤️ ❤️</div>
         </div>
-        <div class="timer-bar-container">
-            <div class="timer-text" id="timerText">⏱️ Tempo: 60s</div>
-            <div class="timer-bar" id="timerBar"></div>
+        <div class="timer-bar-container"><div class="timer-text" id="timerText">⏱️ Tempo: 60s</div><div class="timer-bar" id="timerBar"></div></div>
+        <div class="question-area"><div class="question" id="question">5 x 3 = ?</div>
+            <div class="input-area"><input type="number" id="answer" placeholder="?" autocomplete="off"><button onclick="checkAnswer()">✅ Responder</button></div>
         </div>
-        <div class="question-area">
-            <div class="question" id="question">5 x 3 = ?</div>
-            <div class="input-area">
-                <input type="number" id="answer" placeholder="?" autocomplete="off">
-                <button onclick="checkAnswer()">✅ Responder</button>
-            </div>
-        </div>
-
-        <!-- DOIS RANKINGS LADO A LADO -->
         <div class="rankings-container">
-            <div class="ranking-box">
-                <h3>🏅 Ranking da MINHA TURMA</h3>
-                <div class="ranking-content" id="rankingTurmaList">
-                    <p style="text-align:center;padding:20px;">🏆 Carregando...</p>
-                </div>
-            </div>
-            <div class="ranking-box">
-                <h3>🌍 Ranking GLOBAL (Todas as Turmas)</h3>
-                <div class="ranking-content" id="rankingGlobalList">
-                    <p style="text-align:center;padding:20px;">🏆 Carregando...</p>
-                </div>
-            </div>
+            <div class="ranking-box"><h3>🏅 MINHA TURMA</h3><div class="ranking-content" id="rankingTurmaList"><p style="text-align:center;padding:20px;">🏆 Carregando...</p></div></div>
+            <div class="ranking-box"><h3>🌍 RANKING GLOBAL</h3><div class="ranking-content" id="rankingGlobalList"><p style="text-align:center;padding:20px;">🏆 Carregando...</p></div></div>
         </div>
     </div>
-
-    <!-- TELA GAME OVER -->
     <div id="gameOverScreen" class="hidden">
-        <div class="game-over">
-            <div class="header" style="border-radius: 0"><h2>💀 GAME OVER 💀</h2></div>
-            <div class="stats" id="gameStats"></div>
-            <div style="display: flex; gap: 10px; padding: 20px">
-                <button onclick="resetGame()" style="flex:1">🔄 Jogar Novamente</button>
-                <button onclick="logout()" style="flex:1">🏠 Sair</button>
-            </div>
-        </div>
+        <div class="game-over"><div class="header" style="border-radius:0"><h2>💀 GAME OVER 💀</h2></div>
+        <div class="stats" id="gameStats"></div><div style="display:flex;gap:10px;padding:20px"><button onclick="resetGame()" style="flex:1">🔄 Jogar</button><button onclick="logout()" style="flex:1">🏠 Sair</button></div></div>
     </div>
 </div>
-
 <script>
-    // ========== VARIÁVEIS ==========
-    let jogador = { codigo: '', turma: '' };
-    let ativo = false;
-    let nivel = 1;
-    let vidas = 3;
-    let acertos = 0;
-    let totalPerguntas = 0;
-    let tempo = 60;
-    let tempoRespostas = [];  // Guarda o tempo gasto em cada resposta correta
-    let tempoInicioPergunta = 0;
-    let timerId = null;
-    let respostaAtual = 0;
+    // 🔴 COLOQUE A URL DO SEU APPS SCRIPT AQUI 🔴
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxQG7ZRLaWGWdLj4804h8VsH8oCAomVa9nA2yaDwd__WqwRhYbeD6FdHlBkif_EkeUNJQ/exec';
     
-    const temposNivel = { 1: 60, 2: 30, 3: 20, 4: 15, 5: 10 };
+    let jogador={}, ativo=false, nivel=1, vidas=3, acertos=0, total=0, tempo=60, timerId=null, resposta=0, temposRespostas=[], inicioPergunta=0;
+    const temposNivel={1:60,2:30,3:20,4:15,5:10};
     
-    // Rankings
-    let rankingGlobal = [];
-    let rankingTurma = [];
-    
-    // ========== FUNÇÃO DE EFICIÊNCIA CORRIGIDA ==========
-    function calcularEficiencia() {
-        // Fórmula: 60% vem da taxa de acertos + 40% vem da velocidade
-        
-        // 1. Taxa de acertos (máximo 60 pontos)
-        let taxaAcertos = totalPerguntas > 0 ? (acertos / totalPerguntas) * 60 : 0;
-        
-        // 2. Bônus de velocidade (máximo 40 pontos)
-        // Quanto mais rápido respondeu, maior o bônus
-        let bonusVelocidade = 0;
-        
-        if (tempoRespostas.length > 0) {
-            // Tempo médio de resposta (em segundos)
-            let tempoMedio = tempoRespostas.reduce((a, b) => a + b, 0) / tempoRespostas.length;
-            
-            // Nível 1: tempo máximo 60s, Nível 5: tempo máximo 10s
-            let tempoMaximoNivel = temposNivel[nivel];
-            
-            // Quanto menor o tempo médio, maior o bônus
-            // Se respondeu em 1 segundo, ganha 40 pontos
-            // Se respondeu no tempo limite, ganha 0 pontos
-            let proporcao = Math.max(0, Math.min(1, (tempoMaximoNivel - tempoMedio) / tempoMaximoNivel));
-            bonusVelocidade = proporcao * 40;
-        }
-        
-        // Eficiência final (limitada a 100)
-        let eficiencia = Math.min(100, Math.floor(taxaAcertos + bonusVelocidade));
-        
-        return eficiencia;
-    }
-    
-    // ========== FUNÇÕES DE RANKING ==========
-    function carregarRankings() {
-        const dadosGlobal = localStorage.getItem('ranking_global_tabuada');
-        rankingGlobal = dadosGlobal ? JSON.parse(dadosGlobal) : [];
-        
-        const chaveTurma = 'ranking_turma_' + jogador.turma;
-        const dadosTurma = localStorage.getItem(chaveTurma);
-        rankingTurma = dadosTurma ? JSON.parse(dadosTurma) : [];
-        
-        exibirRankings();
-    }
-    
-    function salvarRankings() {
-        localStorage.setItem('ranking_global_tabuada', JSON.stringify(rankingGlobal));
-        const chaveTurma = 'ranking_turma_' + jogador.turma;
-        localStorage.setItem(chaveTurma, JSON.stringify(rankingTurma));
-    }
-    
-    function exibirRankings() {
-        exibirRankingTurma();
-        exibirRankingGlobal();
-    }
-    
-    function exibirRankingTurma() {
-        const container = document.getElementById('rankingTurmaList');
-        if (!rankingTurma.length) {
-            container.innerHTML = '<p style="text-align:center;padding:20px;">🏅 Nenhuma pontuação na sua turma ainda!</p>';
-            return;
-        }
-        
-        const ordenado = [...rankingTurma].sort((a, b) => b.eficiencia - a.eficiencia);
-        let html = '<table class="ranking-table"><thead><tr><th>🏆</th><th>Código</th><th>Nível</th><th>Eficiência</th></tr></thead><tbody>';
-        
-        ordenado.slice(0, 10).forEach((item, index) => {
-            const souEu = item.codigo === jogador.codigo;
-            const medalha = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
-            html += `<tr style="${souEu ? 'background:#E3F2FD;font-weight:bold' : ''}">
-                <td style="text-align:center">${medalha}</td>
-                <td>${item.codigo}${souEu ? ' 📍' : ''}</td>
-                <td>${item.nivel}/5</td>
-                <td style="color:${item.eficiencia >= 80 ? '#4CAF50' : item.eficiencia >= 50 ? '#FF9800' : '#f44336'}; font-weight:bold">${item.eficiencia}%</td>
-            </tr>`;
-        });
-        html += '</tbody></table>';
-        container.innerHTML = html;
-    }
-    
-    function exibirRankingGlobal() {
-        const container = document.getElementById('rankingGlobalList');
-        if (!rankingGlobal.length) {
-            container.innerHTML = '<p style="text-align:center;padding:20px;">🌍 Nenhuma pontuação global ainda!</p>';
-            return;
-        }
-        
-        const ordenado = [...rankingGlobal].sort((a, b) => b.eficiencia - a.eficiencia);
-        let html = '<table class="ranking-table"><thead><tr><th>🏆</th><th>Código</th><th>Turma</th><th>Nível</th><th>Eficiência</th></tr></thead><tbody>';
-        
-        ordenado.slice(0, 10).forEach((item, index) => {
-            const souEu = item.codigo === jogador.codigo;
-            const medalha = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
-            html += `<tr style="${souEu ? 'background:#E3F2FD;font-weight:bold' : ''}">
-                <td style="text-align:center">${medalha}</td>
-                <td>${item.codigo}${souEu ? ' 📍' : ''}</td>
-                <td><span class="badge-turma">${item.turma}</span></td>
-                <td>${item.nivel}/5</td>
-                <td style="color:${item.eficiencia >= 80 ? '#4CAF50' : item.eficiencia >= 50 ? '#FF9800' : '#f44336'}; font-weight:bold">${item.eficiencia}%</td>
-            </tr>`;
-        });
-        html += '</tbody></table>';
-        container.innerHTML = html;
-    }
-    
-    function adicionarPontuacao(codigo, turma, nivel, eficiencia) {
-        const idxGlobal = rankingGlobal.findIndex(r => r.codigo === codigo);
-        if (idxGlobal !== -1) {
-            if (eficiencia > rankingGlobal[idxGlobal].eficiencia) {
-                rankingGlobal[idxGlobal] = { codigo, turma, nivel, eficiencia, data: new Date().toISOString() };
+    async function carregarRankings() {
+        try {
+            const resp = await fetch(`${URL_APPS_SCRIPT}?acao=get`);
+            const dados = await resp.json();
+            if(dados && dados.length) {
+                exibirRankingTurma(dados.filter(r=>r.turma===jogador.turma));
+                exibirRankingGlobal(dados);
+            } else {
+                document.getElementById('rankingTurmaList').innerHTML='<p style="text-align:center;padding:20px;">🏅 Nenhuma pontuação ainda!</p>';
+                document.getElementById('rankingGlobalList').innerHTML='<p style="text-align:center;padding:20px;">🌍 Nenhuma pontuação global!</p>';
             }
-        } else {
-            rankingGlobal.push({ codigo, turma, nivel, eficiencia, data: new Date().toISOString() });
-        }
-        
-        const idxTurma = rankingTurma.findIndex(r => r.codigo === codigo);
-        if (idxTurma !== -1) {
-            if (eficiencia > rankingTurma[idxTurma].eficiencia) {
-                rankingTurma[idxTurma] = { codigo, turma, nivel, eficiencia, data: new Date().toISOString() };
-                mostrarFeedback('🏆 NOVO RECORDE! 🏆', '#FF9800');
-            }
-        } else {
-            rankingTurma.push({ codigo, turma, nivel, eficiencia, data: new Date().toISOString() });
-            mostrarFeedback('✅ Pontuação salva!', '#4CAF50');
-        }
-        
-        salvarRankings();
-        exibirRankings();
+        } catch(e) { console.error(e); }
     }
     
-    function mostrarFeedback(msg, cor) {
-        const div = document.createElement('div');
-        div.className = 'feedback';
-        div.textContent = msg;
-        div.style.backgroundColor = cor;
-        document.body.appendChild(div);
-        setTimeout(() => div.remove(), 2000);
+    function exibirRankingTurma(dados) {
+        if(!dados.length){ document.getElementById('rankingTurmaList').innerHTML='<p style="text-align:center;padding:20px;">🏅 Nenhuma pontuação na sua turma!</p>'; return; }
+        dados.sort((a,b)=>b.eficiencia-a.eficiencia);
+        let html='<table class="ranking-table"><thead><tr><th>🏆</th><th>Código</th><th>Nível</th><th>Eficiência</th></tr></thead><tbody>';
+        dados.slice(0,10).forEach((item,i)=>{
+            const souEu=item.codigo===jogador.codigo;
+            html+=`<tr style="${souEu?'background:#E3F2FD;font-weight:bold':''}"><td>${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}<td>${item.codigo}${souEu?'📍':''}<td>${item.nivel}/5<td style="color:${item.eficiencia>=80?'#4CAF50':item.eficiencia>=50?'#FF9800':'#f44336'}">${item.eficiencia}%<tr>`;
+        });
+        document.getElementById('rankingTurmaList').innerHTML=html;
     }
     
-    // ========== FUNÇÕES DO JOGO ==========
-    window.login = function() {
-        const turma = document.getElementById('turma').value;
-        const codigo = document.getElementById('codigo').value.trim().toUpperCase();
-        const errorDiv = document.getElementById('loginError');
-        
-        const regex = /^CA[A-Z0-9]{1,3}26\d{2}$/;
-        if (!regex.test(codigo)) {
-            errorDiv.textContent = '❌ Código inválido! Ex: CA6A2601';
-            return;
-        }
-        
-        jogador = { codigo, turma };
-        errorDiv.textContent = '';
-        
+    function exibirRankingGlobal(dados) {
+        if(!dados.length){ document.getElementById('rankingGlobalList').innerHTML='<p style="text-align:center;padding:20px;">🌍 Nenhuma pontuação!</p>'; return; }
+        dados.sort((a,b)=>b.eficiencia-a.eficiencia);
+        let html='<table class="ranking-table"><thead><tr><th>🏆</th><th>Código</th><th>Turma</th><th>Nível</th><th>Eficiência</th></tr></thead><tbody>';
+        dados.slice(0,10).forEach((item,i)=>{
+            const souEu=item.codigo===jogador.codigo;
+            html+=`<tr style="${souEu?'background:#E3F2FD;font-weight:bold':''}"><td>${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}<td>${item.codigo}${souEu?'📍':''}<td><span class="badge-turma">${item.turma}</span><td>${item.nivel}/5<td style="color:${item.eficiencia>=80?'#4CAF50':item.eficiencia>=50?'#FF9800':'#f44336'}">${item.eficiencia}%<tr>`;
+        });
+        document.getElementById('rankingGlobalList').innerHTML=html;
+    }
+    
+    async function salvarPontuacao(codigo,turma,nivel,eficiencia){
+        try{
+            await fetch(URL_APPS_SCRIPT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'salvar',codigo,turma,nivel,eficiencia})});
+            mostrarFeedback('✅ Pontuação salva!','#4CAF50');
+            carregarRankings();
+        }catch(e){console.error(e);}
+    }
+    
+    function mostrarFeedback(msg,cor){ let d=document.createElement('div'); d.className='feedback'; d.textContent=msg; d.style.backgroundColor=cor; document.body.appendChild(d); setTimeout(()=>d.remove(),2000); }
+    
+    window.login=function(){
+        const turma=document.getElementById('turma').value, codigo=document.getElementById('codigo').value.trim().toUpperCase();
+        if(!/^CA[A-Z0-9]{1,3}26\d{2}$/.test(codigo)){ document.getElementById('loginError').innerText='❌ Código inválido!'; return; }
+        jogador={codigo,turma};
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('gameScreen').classList.remove('hidden');
-        document.getElementById('codigoDisplay').textContent = codigo;
-        
-        ativo = true;
-        nivel = 1;
-        vidas = 3;
-        acertos = 0;
-        totalPerguntas = 0;
-        tempoRespostas = [];
-        
-        atualizarVidas();
-        atualizarNivel();
-        carregarRankings();
-        proximaPergunta();
+        document.getElementById('codigoDisplay').innerText=codigo;
+        ativo=true; nivel=1; vidas=3; acertos=0; total=0; temposRespostas=[];
+        atualizarVidas(); atualizarNivel(); carregarRankings(); proximaPergunta();
     };
     
-    function proximaPergunta() {
-        if (!ativo) return;
-        if (timerId) clearInterval(timerId);
-        
-        const n1 = Math.floor(Math.random() * 11);
-        const n2 = Math.floor(Math.random() * 11);
-        respostaAtual = n1 * n2;
-        document.getElementById('question').innerHTML = `${n1} x ${n2} = ?`;
-        document.getElementById('answer').value = '';
-        document.getElementById('answer').focus();
-        
-        tempo = temposNivel[nivel];
-        tempoInicioPergunta = Date.now();
-        document.getElementById('timerText').innerHTML = `⏱️ Tempo: ${tempo}s`;
-        
-        const percentual = 100;
-        document.getElementById('timerBar').style.width = `100%`;
-        document.getElementById('timerBar').classList.remove('warning');
-        
-        timerId = setInterval(() => {
-            if (!ativo) return;
-            tempo--;
-            document.getElementById('timerText').innerHTML = `⏱️ Tempo: ${tempo}s`;
-            
-            const p = (tempo / temposNivel[nivel]) * 100;
-            document.getElementById('timerBar').style.width = `${Math.max(0, p)}%`;
-            if (p < 30) {
-                document.getElementById('timerBar').classList.add('warning');
-            } else {
-                document.getElementById('timerBar').classList.remove('warning');
-            }
-            
-            if (tempo <= 0) {
-                clearInterval(timerId);
-                perderVida('⏰ Tempo esgotou!');
-            }
-        }, 1000);
+    function proximaPergunta(){
+        if(!ativo) return;
+        if(timerId) clearInterval(timerId);
+        const n1=Math.floor(Math.random()*11), n2=Math.floor(Math.random()*11);
+        resposta=n1*n2;
+        document.getElementById('question').innerHTML=`${n1} x ${n2} = ?`;
+        document.getElementById('answer').value=''; document.getElementById('answer').focus();
+        tempo=temposNivel[nivel];
+        inicioPergunta=Date.now();
+        document.getElementById('timerText').innerHTML=`⏱️ Tempo: ${tempo}s`;
+        document.getElementById('timerBar').style.width='100%';
+        timerId=setInterval(()=>{ if(!ativo)return; tempo--; document.getElementById('timerText').innerHTML=`⏱️ Tempo: ${tempo}s`;
+            let p=(tempo/temposNivel[nivel])*100; document.getElementById('timerBar').style.width=`${Math.max(0,p)}%`;
+            if(p<30) document.getElementById('timerBar').classList.add('warning'); else document.getElementById('timerBar').classList.remove('warning');
+            if(tempo<=0){ clearInterval(timerId); perderVida('⏰ Tempo!'); } },1000);
     }
     
-    window.checkAnswer = function() {
-        if (!ativo) return;
-        
-        const resposta = parseInt(document.getElementById('answer').value);
-        const acertou = (resposta === respostaAtual);
-        totalPerguntas++;
-        
-        if (acertou) {
-            const tempoGasto = (Date.now() - tempoInicioPergunta) / 1000;
-            tempoRespostas.push(tempoGasto);
+    window.checkAnswer=function(){
+        if(!ativo) return;
+        let user=parseInt(document.getElementById('answer').value);
+        total++;
+        if(user===resposta){
+            temposRespostas.push((Date.now()-inicioPergunta)/1000);
             acertos++;
-            
-            mostrarFeedback('✅ Correto!', '#4CAF50');
+            mostrarFeedback('✅ Correto!','#4CAF50');
             clearInterval(timerId);
-            
-            if (totalPerguntas % 5 === 0 && nivel < 5) {
-                nivel++;
-                atualizarNivel();
-                mostrarFeedback(`⭐ NÍVEL ${nivel}! ⭐`, '#FF9800');
-            }
-            
+            if(total%5===0 && nivel<5){ nivel++; atualizarNivel(); mostrarFeedback(`⭐ NÍVEL ${nivel}! ⭐`,'#FF9800'); }
             proximaPergunta();
-        } else {
-            document.getElementById('answer').classList.add('shake');
-            setTimeout(() => document.getElementById('answer').classList.remove('shake'), 300);
-            mostrarFeedback(`❌ Errado! Era ${respostaAtual}`, '#f44336');
-            perderVida('Resposta errada!');
-        }
+        } else { mostrarFeedback(`❌ Era ${resposta}`,'#f44336'); perderVida('Errou!'); }
     };
     
-    function perderVida(motivo) {
-        vidas--;
-        atualizarVidas();
-        mostrarFeedback(`💔 ${motivo} (-1 vida)`, '#f44336');
-        
-        if (vidas <= 0) {
-            gameOver();
-        } else {
-            clearInterval(timerId);
-            proximaPergunta();
+    function perderVida(m){ vidas--; atualizarVidas(); if(vidas<=0) gameOver(); else{ clearInterval(timerId); proximaPergunta(); } }
+    function atualizarVidas(){ let h=''; for(let i=0;i<3;i++) h+=i<vidas?'❤️ ':'🖤 '; document.getElementById('livesDisplay').innerHTML=h; }
+    function atualizarNivel(){ document.getElementById('levelDisplay').innerHTML=`Nível ${nivel} - ${temposNivel[nivel]}s`; }
+    
+    function calcularEficiencia(){
+        let taxaAcertos = total>0 ? (acertos/total)*60 : 0;
+        let bonusVelocidade = 0;
+        if(temposRespostas.length>0){
+            let tempoMedio = temposRespostas.reduce((a,b)=>a+b,0)/temposRespostas.length;
+            let tempoMax = temposNivel[nivel];
+            let proporcao = Math.max(0, Math.min(1, (tempoMax - tempoMedio) / tempoMax));
+            bonusVelocidade = proporcao * 40;
         }
+        return Math.min(100, Math.floor(taxaAcertos + bonusVelocidade));
     }
     
-    function atualizarVidas() {
-        let texto = '';
-        for (let i = 0; i < 3; i++) {
-            texto += i < vidas ? '❤️ ' : '🖤 ';
-        }
-        document.getElementById('livesDisplay').innerHTML = texto;
-    }
-    
-    function atualizarNivel() {
-        document.getElementById('levelDisplay').innerHTML = `Nível ${nivel} - ${temposNivel[nivel]}s`;
-    }
-    
-    function gameOver() {
-        ativo = false;
-        if (timerId) clearInterval(timerId);
-        
-        const eficiencia = calcularEficiencia();
-        
-        adicionarPontuacao(jogador.codigo, jogador.turma, nivel, eficiencia);
-        
-        let tempoMedio = tempoRespostas.length > 0 ? (tempoRespostas.reduce((a,b)=>a+b,0)/tempoRespostas.length).toFixed(1) : 'N/A';
-        
-        document.getElementById('gameStats').innerHTML = `
-            <p>📊 <strong>Acertos:</strong> ${acertos}/${totalPerguntas}</p>
-            <p>🏆 <strong>Nível Alcançado:</strong> ${nivel}/5</p>
-            <p>⚡ <strong>Eficiência:</strong> <span style="font-size:24px;color:${eficiencia >= 80 ? '#4CAF50' : eficiencia >= 50 ? '#FF9800' : '#f44336'}">${eficiencia}%</span></p>
-            <p>⏱️ <strong>Tempo médio:</strong> ${tempoMedio} segundos/resposta</p>
-            <p>💀 <strong>Vidas Restantes:</strong> ${vidas}/3</p>
-            <hr>
-            <p>✅ <strong>Pontuação salva nos dois rankings!</strong></p>
-            <p style="font-size:12px;color:#666;">* Eficiência = 60% acertos + 40% velocidade</p>
-        `;
-        
+    async function gameOver(){
+        ativo=false; if(timerId) clearInterval(timerId);
+        let eficiencia = calcularEficiencia();
+        await salvarPontuacao(jogador.codigo, jogador.turma, nivel, eficiencia);
+        let tempoMedio = temposRespostas.length>0 ? (temposRespostas.reduce((a,b)=>a+b,0)/temposRespostas.length).toFixed(1) : 'N/A';
+        document.getElementById('gameStats').innerHTML = `<p>📊 Acertos: ${acertos}/${total}</p><p>🏆 Nível: ${nivel}/5</p><p>⚡ Eficiência: <span style="font-size:24px;color:${eficiencia>=80?'#4CAF50':eficiencia>=50?'#FF9800':'#f44336'}">${eficiencia}%</span></p><p>⏱️ Tempo médio: ${tempoMedio}s</p><p>💀 Vidas: ${vidas}/3</p><hr><p>✅ Pontuação salva na nuvem!</p><p style="font-size:12px">* Todos os dispositivos compartilham o mesmo ranking</p>`;
         document.getElementById('gameScreen').classList.add('hidden');
         document.getElementById('gameOverScreen').classList.remove('hidden');
+        await carregarRankings();
     }
     
-    function resetGame() {
-        document.getElementById('gameOverScreen').classList.add('hidden');
-        document.getElementById('loginScreen').classList.remove('hidden');
-        document.getElementById('codigo').value = '';
-        if (timerId) clearInterval(timerId);
-    }
-    
-    function logout() {
-        resetGame();
-    }
+    function resetGame(){ document.getElementById('gameOverScreen').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); document.getElementById('codigo').value=''; if(timerId) clearInterval(timerId); }
+    function logout(){ resetGame(); }
 </script>
 </body>
 </html>
