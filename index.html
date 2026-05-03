@@ -2,751 +2,260 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏆 Desafio da Tabuada - TOP 10</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .game-container {
-            max-width: 1000px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #5f27cd 0%, #341f97 100%);
-            padding: 20px;
-            color: white;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 26px;
-            letter-spacing: 2px;
-        }
-
-        .header p {
-            font-size: 12px;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-
-        .lives {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 10px 0;
-            font-size: 28px;
-        }
-
-        .level-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 6px 12px;
-            border-radius: 40px;
-            display: inline-block;
-            font-weight: 600;
-            font-size: 12px;
-        }
-
-        .question-area {
-            padding: 25px 20px;
-            text-align: center;
-        }
-
-        .question {
-            font-size: 48px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin: 15px 0;
-        }
-
-        .input-area {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        #answer {
-            padding: 12px 20px;
-            font-size: 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: 50px;
-            width: 160px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        #answer:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-        }
-
-        .timer-bar-container {
-            background: #e0e0e0;
-            height: 10px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 15px 20px;
-        }
-
-        .timer-bar {
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(90deg, #00b09b, #96c93d);
-            transition: width 0.1s linear;
-        }
-
-        .timer-bar.warning {
-            background: linear-gradient(90deg, #f093fb, #f5576c);
-        }
-
-        .timer-text {
-            text-align: center;
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
-        /* RANKINGS */
-        .rankings-container {
-            display: flex;
-            gap: 15px;
-            padding: 20px;
-            background: #f8f9fa;
-            flex-wrap: wrap;
-        }
-
-        .ranking-box {
-            flex: 1;
-            min-width: 250px;
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .ranking-box h3 {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .ranking-box h3 span {
-            color: #ffd700;
-        }
-
-        .ranking-content {
-            max-height: 300px;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .ranking-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-
-        .ranking-table th,
-        .ranking-table td {
-            padding: 8px 5px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .ranking-table th {
-            background: #f0f0f0;
-            color: #333;
-            position: sticky;
-            top: 0;
-            font-size: 11px;
-        }
-
-        /* LOGIN */
-        .login-area {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 14px;
-        }
-
-        .error-message {
-            color: #f5576c;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-
-        .stats {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 16px;
-            margin: 20px;
-            text-align: center;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
-
-        .shake {
-            animation: shake 0.3s ease-in-out;
-        }
-
-        .feedback {
-            position: fixed;
-            top: 25%;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            z-index: 1000;
-            font-size: 16px;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .badge-turma {
-            background: #FF9800;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 12px;
-            font-size: 9px;
-            white-space: nowrap;
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            margin-top: 5px;
-        }
-
-        .first-place {
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            font-weight: bold;
-        }
-
-        @media (max-width: 700px) {
-            .rankings-container {
-                flex-direction: column;
-            }
-            .question {
-                font-size: 36px;
-            }
-            button {
-                padding: 10px 20px;
-            }
-            .ranking-box h3 {
-                font-size: 12px;
-            }
-        }
-
-        .ranking-content::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .ranking-content::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .ranking-content::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;padding:20px;}
+        .container{max-width:1000px;margin:0 auto;background:white;border-radius:30px;overflow:hidden;}
+        .header{background:linear-gradient(135deg,#5f27cd,#341f97);padding:20px;color:white;text-align:center;}
+        .rankings{display:flex;gap:15px;padding:20px;background:#f0f0f0;flex-wrap:wrap;}
+        .ranking{flex:1;min-width:250px;background:white;border-radius:15px;overflow:hidden;}
+        .ranking h3{background:#667eea;color:white;padding:12px;text-align:center;font-size:14px;}
+        .ranking-content{max-height:300px;overflow-y:auto;padding:10px;}
+        table{width:100%;border-collapse:collapse;font-size:12px;}
+        th,td{padding:8px 5px;text-align:left;border-bottom:1px solid #ddd;}
+        th{background:#f5f5f5;}
+        .login-area{padding:20px;}
+        input,select{width:100%;padding:12px;margin:10px 0;border:2px solid #ddd;border-radius:10px;}
+        button{width:100%;padding:15px;background:#667eea;color:white;border:none;border-radius:10px;font-size:16px;cursor:pointer;}
+        button:hover{opacity:0.9;}
+        .hidden{display:none;}
+        .feedback{position:fixed;top:30%;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:50px;color:white;z-index:1000;}
+        .lives{font-size:28px;margin:10px 0;}
+        .question{font-size:40px;font-weight:bold;margin:20px 0;}
+        .first-place{background:#ffd700;font-weight:bold;}
+        .badge-turma{background:#FF9800;color:white;padding:2px 6px;border-radius:12px;font-size:10px;}
+        @media (max-width:700px){.rankings{flex-direction:column;}}
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <!-- TELA DE LOGIN COM RANKING -->
-        <div id="loginScreen">
-            <div class="header">
-                <h1>🏆 DESAFIO DA TABUADA</h1>
-                <p>⚡ Responda rápido, acerte mais e entre para o TOP 10! ⚡</p>
-            </div>
-
-            <!-- RANKINGS NA TELA DE LOGIN -->
-            <div class="rankings-container">
-                <div class="ranking-box">
-                    <h3>🏅 TOP 10 DA <span>SALA</span> 🏅</h3>
-                    <div class="ranking-content" id="loginRankingTurma">
-                        <p style="text-align:center;padding:20px;">🏆 Carregando ranking...</p>
-                    </div>
-                </div>
-                <div class="ranking-box">
-                    <h3>🌍 TOP 10 DA <span>ESCOLA</span> 🌍</h3>
-                    <div class="ranking-content" id="loginRankingGlobal">
-                        <p style="text-align:center;padding:20px;">🏆 Carregando ranking...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ÁREA DE LOGIN -->
-            <div class="login-area">
-                <div class="form-group">
-                    <label>📚 Sua Turma / Sala</label>
-                    <select id="turma">
-                        <option>6º Ano A</option>
-                        <option>6º Ano B</option>
-                        <option>7º Ano A</option>
-                        <option>7º Ano B</option>
-                        <option>8º Ano A</option>
-                        <option>8º Ano B</option>
-                        <option>9º Ano A</option>
-                        <option>9º Ano B</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>🔑 Seu Código (ex: CA6A2601)</label>
-                    <input type="text" id="codigo" placeholder="CA6A2601" maxlength="10">
-                    <div class="error-message" id="loginError"></div>
-                </div>
-                <button onclick="login()" class="btn-login">🎮 ENTRAR E JOGAR 🎮</button>
-                <p style="text-align:center; font-size:11px; margin-top:12px; color:#666;">
-                    💡 Quanto mais rápido você responder, maior sua eficiência!<br>
-                    🔥 Os melhores entram no TOP 10 da sala e da escola!
-                </p>
-            </div>
+<div class="container">
+    <div id="loginScreen">
+        <div class="header"><h2>🏆 DESAFIO DA TABUADA</h2><p>⚡ TOP 10 DA SALA E DA ESCOLA ⚡</p></div>
+        
+        <div class="rankings">
+            <div class="ranking"><h3>🏅 TOP 10 DA SALA</h3><div class="ranking-content" id="rankingSala">Carregando...</div></div>
+            <div class="ranking"><h3>🌍 TOP 10 DA ESCOLA</h3><div class="ranking-content" id="rankingEscola">Carregando...</div></div>
         </div>
-
-        <!-- TELA DO JOGO -->
-        <div id="gameScreen" class="hidden">
-            <div class="header">
-                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                    <span class="level-badge" id="levelDisplay">Nível 1</span>
-                    <span class="level-badge" id="codigoDisplay"></span>
-                </div>
-                <div class="lives" id="livesDisplay">❤️ ❤️ ❤️</div>
-            </div>
-            <div class="timer-bar-container">
-                <div class="timer-text" id="timerText">⏱️ Tempo: 60s</div>
-                <div class="timer-bar" id="timerBar"></div>
-            </div>
-            <div class="question-area">
-                <div class="question" id="question">5 x 3 = ?</div>
-                <div class="input-area">
-                    <input type="number" id="answer" placeholder="?" autocomplete="off">
-                    <button onclick="checkAnswer()">✅ Responder</button>
-                </div>
-            </div>
-            <div class="rankings-container">
-                <div class="ranking-box">
-                    <h3>🏅 TOP 10 DA <span>MINHA SALA</span> 🏅</h3>
-                    <div class="ranking-content" id="rankingTurmaList">
-                        <p style="text-align:center;padding:20px;">🏆 Carregando...</p>
-                    </div>
-                </div>
-                <div class="ranking-box">
-                    <h3>🌍 TOP 10 DA <span>ESCOLA</span> 🌍</h3>
-                    <div class="ranking-content" id="rankingGlobalList">
-                        <p style="text-align:center;padding:20px;">🏆 Carregando...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TELA GAME OVER -->
-        <div id="gameOverScreen" class="hidden">
-            <div class="game-over">
-                <div class="header" style="border-radius: 0">
-                    <h2>💀 GAME OVER 💀</h2>
-                </div>
-                <div class="stats" id="gameStats"></div>
-                <div style="display: flex; gap: 10px; padding: 20px">
-                    <button onclick="resetGame()" style="flex:1">🔄 Jogar Novamente</button>
-                    <button onclick="logout()" style="flex:1">🏠 Sair</button>
-                </div>
-            </div>
+        
+        <div class="login-area">
+            <select id="turma">
+                <option>6º Ano A</option><option>6º Ano B</option><option>7º Ano A</option>
+                <option>7º Ano B</option><option>8º Ano A</option><option>8º Ano B</option>
+                <option>9º Ano A</option><option>9º Ano B</option>
+            </select>
+            <input type="text" id="codigo" placeholder="Código (ex: CA6A2601)" maxlength="10">
+            <div id="loginError" style="color:red;font-size:13px;"></div>
+            <button onclick="login()">🎮 ENTRAR E JOGAR</button>
         </div>
     </div>
 
-    <script>
-        // ✅ SUA URL DO APPS SCRIPT (JÁ INSERIDA)
-        const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzYx-xVH6II-ghZp5O22k4ndEUQiaIoS1Tx63LDH0E4WRcHcuU5-ezRla_gUFHD69-U/exec';
+    <div id="gameScreen" class="hidden">
+        <div class="header">
+            <div style="display:flex;justify-content:space-between"><span id="nivel">Nível 1</span><span id="codigoDisplay"></span></div>
+            <div class="lives" id="lives">❤️ ❤️ ❤️</div>
+        </div>
+        <div style="padding:20px;text-align:center">
+            <div class="question" id="question">5 x 3 = ?</div>
+            <input type="number" id="answer" placeholder="Resposta" style="width:160px;padding:15px;margin:10px;font-size:18px;text-align:center;">
+            <button onclick="checkAnswer()">✅ RESPONDER</button>
+        </div>
+        <div class="rankings">
+            <div class="ranking"><h3>🏅 TOP 10 MINHA SALA</h3><div class="ranking-content" id="gameRankingSala">Carregando...</div></div>
+            <div class="ranking"><h3>🌍 TOP 10 ESCOLA</h3><div class="ranking-content" id="gameRankingEscola">Carregando...</div></div>
+        </div>
+    </div>
 
-        let jogador = {},
-            ativo = false,
-            nivel = 1,
-            vidas = 3,
-            acertos = 0,
-            total = 0,
-            tempo = 60,
-            timerId = null,
-            resposta = 0,
-            temposRespostas = [],
-            inicioPergunta = 0;
+    <div id="gameOverScreen" class="hidden">
+        <div class="header"><h2>💀 GAME OVER 💀</h2></div>
+        <div class="stats" id="stats" style="padding:20px;text-align:center;"></div>
+        <div style="padding:20px;display:flex;gap:10px">
+            <button onclick="resetGame()" style="flex:1">🔄 JOGAR NOVAMENTE</button>
+            <button onclick="logout()" style="flex:1">🏠 SAIR</button>
+        </div>
+    </div>
+</div>
 
-        const temposNivel = {
-            1: 60,
-            2: 30,
-            3: 20,
-            4: 15,
-            5: 10
-        };
+<script>
+// 🔴 COLOQUE A URL QUE VOCÊ COPIOU DO APPS SCRIPT AQUI 🔴
+const URL_API = 'https://script.google.com/macros/s/AKfycbyIOxIeUq5zQEQjWcidbt4NYxGR7VKsNpX2PBh4Kcx2RT7dxPoqFDH__bupGYWJdFwz/exec';
 
-        // ========== FUNÇÕES DE RANKING ==========
-        async function carregarRankingsLogin() {
-            try {
-                const resp = await fetch(`${URL_APPS_SCRIPT}?acao=get`);
-                const dados = await resp.json();
-                if (dados && dados.length) {
-                    const turmaSelecionada = document.getElementById('turma').value;
-                    const dadosSala = dados.filter(r => r.turma === turmaSelecionada);
-                    exibirRankingTurmaLogin(dadosSala);
-                    exibirRankingGlobalLogin(dados);
-                } else {
-                    document.getElementById('loginRankingTurma').innerHTML = '<p style="text-align:center;padding:20px;">🏅 Nenhuma pontuação ainda! Seja o primeiro!</p>';
-                    document.getElementById('loginRankingGlobal').innerHTML = '<p style="text-align:center;padding:20px;">🌍 Nenhuma pontuação global!</p>';
-                }
-            } catch (e) {
-                console.error(e);
-                document.getElementById('loginRankingTurma').innerHTML = '<p style="text-align:center;padding:20px;">⚠️ Erro ao carregar. Verifique a conexão.</p>';
-            }
+let jogador = {}, ativo = false, nivel = 1, vidas = 3, acertos = 0, total = 0;
+let tempo = 60, timerId = null, respostaAtual = 0, temposRespostas = [], inicioPergunta = 0;
+const temposNivel = {1:60,2:30,3:20,4:15,5:10};
+
+async function carregarRankings() {
+    try {
+        const resposta = await fetch(`${URL_API}?acao=get`);
+        const dados = await resposta.json();
+        
+        if (dados && dados.length) {
+            const turmaSelecionada = document.getElementById('turma')?.value || '6º Ano A';
+            const dadosSala = dados.filter(r => r.turma === turmaSelecionada);
+            exibirRankingSala(dadosSala);
+            exibirRankingEscola(dados);
+        } else {
+            document.getElementById('rankingSala').innerHTML = '<p style="text-align:center">🏅 Nenhuma pontuação ainda! Seja o primeiro!</p>';
+            document.getElementById('rankingEscola').innerHTML = '<p style="text-align:center">🌍 Nenhuma pontuação global!</p>';
         }
+    } catch(e) {
+        document.getElementById('rankingSala').innerHTML = '<p style="text-align:center">⚠️ Erro de conexão. Verifique a URL do Apps Script.</p>';
+        document.getElementById('rankingEscola').innerHTML = '<p style="text-align:center">⚠️ URL deve terminar com /exec</p>';
+    }
+}
 
-        function exibirRankingTurmaLogin(dados) {
-            if (!dados.length) {
-                document.getElementById('loginRankingTurma').innerHTML = '<p style="text-align:center;padding:20px;">🏅 Nenhuma pontuação nesta sala ainda!</p>';
-                return;
-            }
-            dados.sort((a, b) => b.eficiencia - a.eficiencia);
-            let html = '<table class="ranking-table"><thead><tr><th>🏆</th><th>CÓDIGO</th><th>NÍVEL</th><th>%</th></tr></thead><tbody>';
-            dados.slice(0, 10).forEach((item, i) => {
-                let medalha = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`;
-                let cor = item.eficiencia >= 80 ? '#4CAF50' : item.eficiencia >= 50 ? '#FF9800' : '#f44336';
-                html += `<tr class="${i === 0 ? 'first-place' : ''}">
-                    <td style="text-align:center">${medalha}</td>
-                    <td><strong>${item.codigo}</strong></td>
-                    <td>${item.nivel}/5 ${'⭐'.repeat(item.nivel)}</td>
-                    <td style="color:${cor}; font-weight:bold">${item.eficiencia}%</td>
-                </tr>`;
-            });
-            document.getElementById('loginRankingTurma').innerHTML = html;
+function exibirRankingSala(dados) {
+    const div = document.getElementById('rankingSala');
+    if (!dados.length) { div.innerHTML = '<p>🏅 Nenhuma pontuação nesta sala</p>'; return; }
+    dados.sort((a,b)=>b.eficiencia - a.eficiencia);
+    let html = '</table><thead><tr><th>🏆</th><th>Código</th><th>Nível</th><th>%</th></tr></thead><tbody>';
+    dados.slice(0,10).forEach((item,i)=>{
+        let medalha = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}º`;
+        html += `<tr class="${i===0?'first-place':''}"><td>${medalha}</td><td>${item.codigo}</td><td>${item.nivel}/5<td style="color:${item.eficiencia>=80?'green':'orange'}">${item.eficiencia}%</td></table>`;
+    });
+    div.innerHTML = html;
+}
+
+function exibirRankingEscola(dados) {
+    const div = document.getElementById('rankingEscola');
+    if (!dados.length) { div.innerHTML = '<p>🌍 Nenhuma pontuação</p>'; return; }
+    dados.sort((a,b)=>b.eficiencia - a.eficiencia);
+    let html = '<table><thead><tr><th>🏆</th><th>Código</th><th>Sala</th><th>Nível</th><th>%</th></tr></thead><tbody>';
+    dados.slice(0,10).forEach((item,i)=>{
+        let medalha = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}º`;
+        html += `<tr class="${i===0?'first-place':''}"><td>${medalha}</td><td>${item.codigo}<td><span class="badge-turma">${item.turma}</span></td><td>${item.nivel}/5<td style="color:${item.eficiencia>=80?'green':'orange'}">${item.eficiencia}%</td></tr>`;
+    });
+    div.innerHTML = html;
+}
+
+async function carregarRankingsJogo() {
+    try {
+        const resposta = await fetch(`${URL_API}?acao=get`);
+        const dados = await resposta.json();
+        if(dados && dados.length) {
+            exibirRankingSalaJogo(dados.filter(r=>r.turma===jogador.turma));
+            exibirRankingEscolaJogo(dados);
         }
+    } catch(e) { console.error(e); }
+}
 
-        function exibirRankingGlobalLogin(dados) {
-            if (!dados.length) {
-                document.getElementById('loginRankingGlobal').innerHTML = '<p style="text-align:center;padding:20px;">🌍 Nenhuma pontuação na escola!</p>';
-                return;
-            }
-            dados.sort((a, b) => b.eficiencia - a.eficiencia);
-            let html = '<table class="ranking-table"><thead><tr><th>🏆</th><th>CÓDIGO</th><th>SALA</th><th>NÍVEL</th><th>%</th></tr></thead><tbody>';
-            dados.slice(0, 10).forEach((item, i) => {
-                let medalha = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`;
-                let cor = item.eficiencia >= 80 ? '#4CAF50' : item.eficiencia >= 50 ? '#FF9800' : '#f44336';
-                html += `<tr class="${i === 0 ? 'first-place' : ''}">
-                    <td style="text-align:center">${medalha}</td>
-                    <td><strong>${item.codigo}</strong></td>
-                    <td><span class="badge-turma">${item.turma}</span></td>
-                    <td>${item.nivel}/5</td>
-                    <td style="color:${cor}; font-weight:bold">${item.eficiencia}%</td>
-                 </tr>`;
-            });
-            document.getElementById('loginRankingGlobal').innerHTML = html;
-        }
+function exibirRankingSalaJogo(dados) {
+    const div = document.getElementById('gameRankingSala');
+    if(!dados.length){ div.innerHTML='<p>🏅 Nenhuma pontuação</p>'; return; }
+    dados.sort((a,b)=>b.eficiencia-a.eficiencia);
+    let html = '<table><thead><tr><th>🏆</th><th>Código</th><th>Nível</th><th>%</th></tr></thead><tbody>';
+    dados.slice(0,10).forEach((item,i)=>{
+        const souEu = item.codigo === jogador.codigo;
+        let medalha = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}º`;
+        html += `<tr style="${souEu?'background:#E3F2FD;font-weight:bold':''}"><td>${medalha}</td><td>${item.codigo}${souEu?'📍':''}</td><td>${item.nivel}/5<td>${item.eficiencia}%</td></tr>`;
+    });
+    div.innerHTML = html;
+}
 
-        async function carregarRankingsJogo() {
-            try {
-                const resp = await fetch(`${URL_APPS_SCRIPT}?acao=get`);
-                const dados = await resp.json();
-                if (dados && dados.length) {
-                    exibirRankingTurmaJogo(dados.filter(r => r.turma === jogador.turma));
-                    exibirRankingGlobalJogo(dados);
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        }
+function exibirRankingEscolaJogo(dados) {
+    const div = document.getElementById('gameRankingEscola');
+    if(!dados.length){ div.innerHTML='<p>🌍 Nenhuma pontuação</p>'; return; }
+    dados.sort((a,b)=>b.eficiencia-a.eficiencia);
+    let html = '<table><thead><tr><th>🏆</th><th>Código</th><th>Sala</th><th>Nível</th><th>%</th></tr></thead><tbody>';
+    dados.slice(0,10).forEach((item,i)=>{
+        const souEu = item.codigo === jogador.codigo;
+        let medalha = i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}º`;
+        html += `<tr style="${souEu?'background:#E3F2FD;font-weight:bold':''}"><td>${medalha}</td><td>${item.codigo}${souEu?'📍':''}<td><span class="badge-turma">${item.turma}</span></td><td>${item.nivel}/5<td>${item.eficiencia}%</td></tr>`;
+    });
+    div.innerHTML = html;
+}
 
-        function exibirRankingTurmaJogo(dados) {
-            if (!dados.length) {
-                document.getElementById('rankingTurmaList').innerHTML = '<p style="text-align:center;padding:20px;">🏅 Nenhuma pontuação na sua sala!</p>';
-                return;
-            }
-            dados.sort((a, b) => b.eficiencia - a.eficiencia);
-            let html = '<table class="ranking-table"><thead><tr><th>🏆</th><th>CÓDIGO</th><th>NÍVEL</th><th>%</th></tr></thead><tbody>';
-            dados.slice(0, 10).forEach((item, i) => {
-                const souEu = item.codigo === jogador.codigo;
-                let medalha = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`;
-                let cor = item.eficiencia >= 80 ? '#4CAF50' : item.eficiencia >= 50 ? '#FF9800' : '#f44336';
-                html += `<tr style="${souEu ? 'background:#E3F2FD; font-weight:bold' : ''}">
-                    <td style="text-align:center">${medalha}</td>
-                    <td>${item.codigo}${souEu ? ' 📍' : ''}</td>
-                    <td>${item.nivel}/5</td>
-                    <td style="color:${cor}">${item.eficiencia}%</td>
-                 </tr>`;
-            });
-            document.getElementById('rankingTurmaList').innerHTML = html;
-        }
-
-        function exibirRankingGlobalJogo(dados) {
-            if (!dados.length) {
-                document.getElementById('rankingGlobalList').innerHTML = '<p style="text-align:center;padding:20px;">🌍 Nenhuma pontuação na escola!</p>';
-                return;
-            }
-            dados.sort((a, b) => b.eficiencia - a.eficiencia);
-            let html = '<table class="ranking-table"><thead><tr><th>🏆</th><th>CÓDIGO</th><th>SALA</th><th>NÍVEL</th><th>%</th></tr></thead><tbody>';
-            dados.slice(0, 10).forEach((item, i) => {
-                const souEu = item.codigo === jogador.codigo;
-                let medalha = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}º`;
-                let cor = item.eficiencia >= 80 ? '#4CAF50' : item.eficiencia >= 50 ? '#FF9800' : '#f44336';
-                html += `<tr style="${souEu ? 'background:#E3F2FD; font-weight:bold' : ''}">
-                    <td style="text-align:center">${medalha}</td>
-                    <td>${item.codigo}${souEu ? ' 📍' : ''}</td>
-                    <td><span class="badge-turma">${item.turma}</span></td>
-                    <td>${item.nivel}/5</td>
-                    <td style="color:${cor}">${item.eficiencia}%</td>
-                 </tr>`;
-            });
-            document.getElementById('rankingGlobalList').innerHTML = html;
-        }
-
-        async function salvarPontuacao(codigo, turma, nivel, eficiencia) {
-            try {
-                await fetch(URL_APPS_SCRIPT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ codigo, turma, nivel, eficiencia })
-                });
-                mostrarFeedback('✅ Pontuação salva! Você entrou no TOP 10!', '#4CAF50');
-                carregarRankingsJogo();
-                carregarRankingsLogin();
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        function mostrarFeedback(msg, cor) {
-            let d = document.createElement('div');
-            d.className = 'feedback';
-            d.textContent = msg;
-            d.style.backgroundColor = cor;
-            document.body.appendChild(d);
-            setTimeout(() => d.remove(), 2000);
-        }
-
-        // ========== FUNÇÕES DO JOGO ==========
-        window.login = function() {
-            const turma = document.getElementById('turma').value;
-            const codigo = document.getElementById('codigo').value.trim().toUpperCase();
-            if (!/^CA[A-Z0-9]{1,3}26\d{2}$/.test(codigo)) {
-                document.getElementById('loginError').innerText = '❌ Código inválido! Ex: CA6A2601';
-                return;
-            }
-            jogador = { codigo, turma };
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('gameScreen').classList.remove('hidden');
-            document.getElementById('codigoDisplay').innerText = codigo;
-            ativo = true;
-            nivel = 1;
-            vidas = 3;
-            acertos = 0;
-            total = 0;
-            temposRespostas = [];
-            atualizarVidas();
-            atualizarNivel();
-            carregarRankingsJogo();
-            proximaPergunta();
-        };
-
-        function proximaPergunta() {
-            if (!ativo) return;
-            if (timerId) clearInterval(timerId);
-            const n1 = Math.floor(Math.random() * 11);
-            const n2 = Math.floor(Math.random() * 11);
-            resposta = n1 * n2;
-            document.getElementById('question').innerHTML = `${n1} x ${n2} = ?`;
-            document.getElementById('answer').value = '';
-            document.getElementById('answer').focus();
-            tempo = temposNivel[nivel];
-            inicioPergunta = Date.now();
-            document.getElementById('timerText').innerHTML = `⏱️ Tempo: ${tempo}s`;
-            document.getElementById('timerBar').style.width = '100%';
-            timerId = setInterval(() => {
-                if (!ativo) return;
-                tempo--;
-                document.getElementById('timerText').innerHTML = `⏱️ Tempo: ${tempo}s`;
-                let p = (tempo / temposNivel[nivel]) * 100;
-                document.getElementById('timerBar').style.width = `${Math.max(0, p)}%`;
-                if (p < 30) document.getElementById('timerBar').classList.add('warning');
-                else document.getElementById('timerBar').classList.remove('warning');
-                if (tempo <= 0) {
-                    clearInterval(timerId);
-                    perderVida('⏰ Tempo!');
-                }
-            }, 1000);
-        }
-
-        // Tecla Enter
-        document.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                if (!document.getElementById('gameScreen').classList.contains('hidden')) {
-                    checkAnswer();
-                }
-            }
+async function salvarPontuacao(codigo,turma,nivel,eficiencia) {
+    try {
+        await fetch(URL_API, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({codigo,turma,nivel,eficiencia})
         });
+    } catch(e) { console.error(e); }
+}
 
-        document.getElementById('turma').addEventListener('change', function() {
-            carregarRankingsLogin();
-        });
+window.login = function() {
+    const turma = document.getElementById('turma').value;
+    const codigo = document.getElementById('codigo').value.trim().toUpperCase();
+    if (!/^CA[A-Z0-9]{1,3}26\d{2}$/.test(codigo)) {
+        document.getElementById('loginError').innerText = '❌ Código inválido! Ex: CA6A2601';
+        return;
+    }
+    jogador = {codigo, turma};
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('gameScreen').classList.remove('hidden');
+    document.getElementById('codigoDisplay').innerText = codigo;
+    ativo = true; nivel = 1; vidas = 3; acertos = 0; total = 0; temposRespostas = [];
+    atualizarVidas(); atualizarNivel();
+    carregarRankingsJogo();
+    proximaPergunta();
+};
 
-        window.checkAnswer = function() {
-            if (!ativo) return;
-            let user = parseInt(document.getElementById('answer').value);
-            total++;
-            if (user === resposta) {
-                temposRespostas.push((Date.now() - inicioPergunta) / 1000);
-                acertos++;
-                mostrarFeedback('✅ Correto!', '#4CAF50');
-                clearInterval(timerId);
-                if (total % 5 === 0 && nivel < 5) {
-                    nivel++;
-                    atualizarNivel();
-                    mostrarFeedback(`⭐ NÍVEL ${nivel}! ⭐`, '#FF9800');
-                }
-                proximaPergunta();
-            } else {
-                document.getElementById('answer').classList.add('shake');
-                setTimeout(() => document.getElementById('answer').classList.remove('shake'), 300);
-                mostrarFeedback(`❌ Era ${resposta}`, '#f44336');
-                perderVida('Errou!');
-            }
-        };
+function proximaPergunta() {
+    if(!ativo) return;
+    if(timerId) clearInterval(timerId);
+    let n1=Math.floor(Math.random()*11), n2=Math.floor(Math.random()*11);
+    respostaAtual=n1*n2;
+    document.getElementById('question').innerHTML=`${n1} x ${n2} = ?`;
+    document.getElementById('answer').value='';
+    document.getElementById('answer').focus();
+    tempo=temposNivel[nivel];
+    inicioPergunta=Date.now();
+    timerId=setInterval(()=>{
+        if(!ativo) return;
+        tempo--;
+        if(tempo<=0){ clearInterval(timerId); perderVida('⏰ Tempo!'); }
+    },1000);
+}
 
-        function perderVida(m) {
-            vidas--;
-            atualizarVidas();
-            if (vidas <= 0) gameOver();
-            else {
-                clearInterval(timerId);
-                proximaPergunta();
-            }
-        }
+window.checkAnswer=function(){
+    if(!ativo) return;
+    let resp=parseInt(document.getElementById('answer').value);
+    total++;
+    if(resp===respostaAtual){
+        temposRespostas.push((Date.now()-inicioPergunta)/1000);
+        acertos++;
+        clearInterval(timerId);
+        if(total%5===0 && nivel<5){ nivel++; atualizarNivel(); }
+        proximaPergunta();
+    } else { perderVida('Errou!'); }
+};
 
-        function atualizarVidas() {
-            let h = '';
-            for (let i = 0; i < 3; i++) h += i < vidas ? '❤️ ' : '🖤 ';
-            document.getElementById('livesDisplay').innerHTML = h;
-        }
+function perderVida(m){ vidas--; atualizarVidas(); if(vidas<=0) gameOver(); else { clearInterval(timerId); proximaPergunta(); } }
+function atualizarVidas(){ let h=''; for(let i=0;i<3;i++) h+=i<vidas?'❤️ ':'🖤 '; document.getElementById('lives').innerHTML=h; }
+function atualizarNivel(){ document.getElementById('nivel').innerHTML=`Nível ${nivel} - ${temposNivel[nivel]}s`; }
 
-        function atualizarNivel() {
-            document.getElementById('levelDisplay').innerHTML = `Nível ${nivel} - ${temposNivel[nivel]}s`;
-        }
+function calcularEficiencia(){
+    let taxa = total>0 ? (acertos/total)*60 : 0;
+    let bonus=0;
+    if(temposRespostas.length>0){
+        let media = temposRespostas.reduce((a,b)=>a+b,0)/temposRespostas.length;
+        let proporcao = Math.max(0, Math.min(1, (temposNivel[nivel]-media)/temposNivel[nivel]));
+        bonus = proporcao*40;
+    }
+    return Math.min(100, Math.floor(taxa+bonus));
+}
 
-        function calcularEficiencia() {
-            let taxaAcertos = total > 0 ? (acertos / total) * 60 : 0;
-            let bonusVelocidade = 0;
-            if (temposRespostas.length > 0) {
-                let tempoMedio = temposRespostas.reduce((a, b) => a + b, 0) / temposRespostas.length;
-                let tempoMax = temposNivel[nivel];
-                let proporcao = Math.max(0, Math.min(1, (tempoMax - tempoMedio) / tempoMax));
-                bonusVelocidade = proporcao * 40;
-            }
-            return Math.min(100, Math.floor(taxaAcertos + bonusVelocidade));
-        }
+async function gameOver(){
+    ativo=false; if(timerId) clearInterval(timerId);
+    let eficiencia = calcularEficiencia();
+    await salvarPontuacao(jogador.codigo, jogador.turma, nivel, eficiencia);
+    let tempoMedio = temposRespostas.length>0 ? (temposRespostas.reduce((a,b)=>a+b,0)/temposRespostas.length).toFixed(1) : 'N/A';
+    document.getElementById('stats').innerHTML = `<p>📊 Acertos: ${acertos}/${total}</p><p>🏆 Nível: ${nivel}/5</p><p>⚡ Eficiência: <span style="font-size:28px;color:${eficiencia>=80?'green':'orange'}">${eficiencia}%</span></p><p>⏱️ Tempo médio: ${tempoMedio}s</p><p>💀 Vidas: ${vidas}/3</p><hr><p>✅ Pontuação salva!</p>`;
+    document.getElementById('gameScreen').classList.add('hidden');
+    document.getElementById('gameOverScreen').classList.remove('hidden');
+    await carregarRankings();
+}
 
-        async function gameOver() {
-            ativo = false;
-            if (timerId) clearInterval(timerId);
-            let eficiencia = calcularEficiencia();
-            await salvarPontuacao(jogador.codigo, jogador.turma, nivel, eficiencia);
-            let tempoMedio = temposRespostas.length > 0 ? (temposRespostas.reduce((a, b) => a + b, 0) / temposRespostas.length).toFixed(1) : 'N/A';
-            document.getElementById('gameStats').innerHTML = `
-                <p>📊 Acertos: ${acertos}/${total}</p>
-                <p>🏆 Nível: ${nivel}/5</p>
-                <p>⚡ Eficiência: <span style="font-size:28px;color:${eficiencia >= 80 ? '#4CAF50' : eficiencia >= 50 ? '#FF9800' : '#f44336'}">${eficiencia}%</span></p>
-                <p>⏱️ Tempo médio: ${tempoMedio} segundos</p>
-                <p>💀 Vidas: ${vidas}/3</p>
-                <hr>
-                <p>✅ Pontuação salva! Veja se você entrou no TOP 10!</p>
-                <p style="font-size:11px">🌟 Volte para a tela inicial e veja o ranking atualizado!</p>
-            `;
-            document.getElementById('gameScreen').classList.add('hidden');
-            document.getElementById('gameOverScreen').classList.remove('hidden');
-            await carregarRankingsJogo();
-        }
+function resetGame(){ document.getElementById('gameOverScreen').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); if(timerId) clearInterval(timerId); carregarRankings(); }
+function logout(){ resetGame(); }
 
-        function resetGame() {
-            document.getElementById('gameOverScreen').classList.add('hidden');
-            document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('codigo').value = '';
-            if (timerId) clearInterval(timerId);
-            carregarRankingsLogin();
-        }
+document.addEventListener('keypress', (e) => { if(e.key==='Enter' && !document.getElementById('gameScreen').classList.contains('hidden')) checkAnswer(); });
+document.getElementById('turma').addEventListener('change', () => carregarRankings());
 
-        function logout() {
-            resetGame();
-        }
-
-        // Carregar rankings ao iniciar
-        carregarRankingsLogin();
-    </script>
+carregarRankings();
+</script>
 </body>
 </html>
